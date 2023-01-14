@@ -13,6 +13,10 @@
 
 ## Values that previously worked
 
+
+[Export File of PhotonVision Pipeline](software/vision/PhotonVisionPipeline_files/photonvision-settings.zip)
+
+Download this ^. Then go to the settings page on the photonvision website. Then click import settings. Choose this file.
 ### Threshold Tab
 * Hue: 75-112
 * Saturation: 79-255
