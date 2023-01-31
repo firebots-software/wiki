@@ -18,6 +18,7 @@ whenClickedA(runIntakeProcess(cube))
 6. In 3 seconds (say) close piston around cube.
 
 Ideas we have:
+
 * Pre established angles measured using gyroscope -> like if you press a button, no matter where you are, if you want to go to 90 degrees you go to that position
 
 * Arm can extend and retract
