@@ -1,6 +1,6 @@
 # Firebots Wiki
 
-[gimmick:theme](cosmo)
+[gimmick:themechooser](Chose Theme)
 [gimmick:math]()
 
 [Git](git/git.md)
