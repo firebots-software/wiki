@@ -1,4 +1,4 @@
-# Peter
+# Piper (formerly Peter)
 
 ## Wait, what IS Peter, exactly?
 
@@ -9,3 +9,7 @@
 
 * When the driver presses on the left trigger, the note is loaded but not shot. This means that we intake the note, run the preshooter 3 inches, but we don't run the shooter motors yet. It's not until the right trigger is pressed by the driver that we finally shoot the note. This is to ensure that we're prepared for situations where we want to make sure we're aimed properly first before shooting. 
 * But what if we want to shoot immediately? If the left trigger hasn't already been pressed by the driver, the right trigger does all the things PLUS shooting when it's pressed. This is to ensure we're prepared for times when we want to shoot quickly. 
+
+## What's the deal with Piper?
+
+* After our first competition at Utah, our team decided to change our shooter/intake to have its motors on the top and bottom of the mechanism instead of at the sides to allow for long-distance shooting. Thus, Piper was born. 
