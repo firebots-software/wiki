@@ -26,7 +26,7 @@ Next step is to install photonlib. Here is the general guide on how to install p
 
 ## What to do if I popped out the SD card
 
-If you popped out your SD card or unplugged the Pi while it had power, then you did not follow my directions. You most likley lost all the calibrations and settings you had on the SD card because its now corrupted. You need to re-flash your sd card and recalibrate (if you didn't use calibdb).
+If you popped out your SD card or unplugged the Pi while it had power, then you did not follow my directions. You most likley lost all the calibrations and settings you had on the SD card because its now corrupted. You need to [re-flash your SD card](#cloning-mini-sd-card-image)** and recalibrate (if you didn't use calibdb).
 
 ## Setting up Static IP on OrangePI
 
