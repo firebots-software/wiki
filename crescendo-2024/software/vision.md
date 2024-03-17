@@ -13,12 +13,12 @@ In contrast to last years Limelight 2, we chose the Orange Pi as our coprocessor
 >**Please use caution to not pop out the sd card or unplug the Pi while the Pi is on. If you do manage to screw up and do this please refer to: [What to do if I popped out the SD card](#what-to-do-if-i-popped-out-the-sd-card)**
 >
 
->**The orange pi is highly susceptible to overheating so please try add fans, heatsyncs and please don't add more than 2 cameras per orangepi**
+>**The orange pi is highly susceptible to overheating so please try add fans, heatsinks and please don't add more than 2 cameras per orangepi**
 >
 
 After the pi boots up, the login is "pi" and the password is "raspberry". Next [Set up the static ID](#setting-up-static-ip-on-orangepi)
 
-You can access the photon vision dashboard through your ip + port number. ```10.35.1.1:5800```
+You can access the photon vision dashboard through ```OPI IPv4``` + ```:``` + ```port number```. ```10.35.x.x:5800```
 
 Next step is to install photonlib. Here is the general guide on how to install photonlib: [Photonlib Docs](https://docs.photonvision.org/en/latest/docs/programming/photonlib/adding-vendordep.html)
 >**Please check if the photon vision version on your orangepi and the photonlib version are the same. Vision won't work if they don't match. [What to do if they dont match](#what-to-do-if-photonlib-version-doesnt-match-with-photon-vision-version)**
@@ -143,3 +143,33 @@ m_robotContainer.doTelemetry();
 
 ## Camera Mount
 It is **IMPERATIVE** that you look at camera position when designing the robot, so talk to design and work with them to figure where the camera would be most useful where it can see what it needs to see most, if not all the time. This also gives you the time to have the potential to add multiple cameras.
+
+## Cloning Mini SD Card Image
+
+Tool: Balena Etcher ([https://etcher.balena.io/](https://etcher.balena.io/))
+
+💾 Balena Etcher is free for use, and can flash/clone (mini) SD cards
+
+❗ Balena Etcher can only clone from one SD card to another, and not to a virtual drive (VHD) on your computer
+
+---
+
+1. Download [Balena Etcher](https://etcher.balena.io/)
+
+### Flash from Image (File)
+
+1. In balenaEtcher, select `Flash from file` 
+2. Select the image you want.
+3. Select the target Mini SD card
+4. Flash!
+
+### Cloning a Drive
+
+1. Select `Clone Drive` and select the source drive-where to clone from
+2. Select the target drive-what to clone to
+3. Clone!
+
+<aside>
+❗ Make sure your source and target drives are different, may corrupt if they are the same!
+
+</aside>
