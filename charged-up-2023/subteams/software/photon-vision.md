@@ -15,6 +15,32 @@ For the limelight, head on over to the [PhotonVision Gitub Page](https://github.
 
 Use the [Balena Etcher](https://www.balena.io/etcher/) software to flash the image onto the limelight. Connect your computer to the micro-USB of the limelight. The computer cannot be a Windows 7 or Windows XP. MAKE SURE THE LIMELIGHT HAS NO POWER. Then open Balena Etcher in adminstrator. After doing so, click the Flash From File button. Select the PhotonVision image you downloaded. Then click select target. Select the limelight. Then flash. After flashing, set up [PhotonVision pipeline](photon-vision-pipeline.md).
 
+## Flash PhotonVision to OrangePi
+
+Use the [Balena Etcher](https://www.balena.io/etcher/) software to flash the image onto the OrangePi. Connect your sd card to your computer. The computer cannot be a Windows 7 or Windows XP. Then open Balena Etcher in adminstrator. After doing so, click the Flash From File button. Select the PhotonVision image you downloaded. Then click select target. Select the sd card. Then flash. After flashing, set up [PhotonVision pipeline](photon-vision-pipeline.md).
+
+## Setting up Static IP on OrangePI
+
+On the OrangePI, do the following steps:
+
+1. Type ```sudo vim /etc/netplan/01-static-ip.yaml```
+2. Type
+```yaml
+network:
+    version: 2
+    renderer: networkd
+    ethernets:
+        eth0:
+            dhcp4: no
+            addresses:
+                - 10.35.1.4/32
+            routes:
+                - to: default
+                via: 10.35.1.1
+```
+3. Run ```sudo netplan apply```
+4. Restart the pi
+
 ## Documentation
 
 Implement [these](https://docs.photonvision.org/en/latest/docs/programming/photonlib/getting-target-data.html) functions on your code.
