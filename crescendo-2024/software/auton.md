@@ -2,7 +2,7 @@
 
 ## PathPlanner
 
-- Easy way to see paths for auton.
+- Easy way to see and make paths for auton.
 - Can also be used during teleop so that the driver has an easier job.
 - In its own app which is connected to the VScode.
 
