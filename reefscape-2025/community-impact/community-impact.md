@@ -1,0 +1,3 @@
+# Community Impact Efforts '24
+
+Community Impact is an initiative of Fremont High Robotics to provide access to STEAM in our community through engaging, hands-on activities. Through our Torchbearing Tutors after-school lessons and take-home Kindline Kits, we have reached over 400 elementary school students in historically underprivileged areas of Sunnyvale. During our first year of Community Impact, we won the Motivate Award in the 2023 season and cannot wait to see how far we'll go in the future as our program expands. 
