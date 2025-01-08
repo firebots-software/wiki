@@ -12,4 +12,4 @@ Find out more:
 
 * [Business and Marketing Team](bam/welcome-to-bam.md)
 
-* [Community Impact Team](community-impact/community-impact.md)
+* [Community Impact Team](community-impact/welcome-to-community-impact.md)
