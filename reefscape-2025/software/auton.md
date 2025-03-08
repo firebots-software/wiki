@@ -1,8 +1,316 @@
 # Autonomous
 
+The Autonomous period of a robot match is the first 15 seconds of the match. It is one of the most important parts of our robot's code, as we rely heavily on the Autonomous period to earn many points that help our robot take a lead for our alliance.
+
+There are many ways to make the robot move on its own. Although it's possible to make the robot move using simple motor commands that exist in WPILib, it is much easier to make a very advanced, reliable and versatile auto using tools such as PathPlanner and Choreo.
+
+## Choreo and PathPlanner
+Choreo and PathPlanner are tools developed by the FRC community, specifically for helping teams like ours create powerful "Autonomous Trajectories." They consist of:
+* A **graphical app** that allows you to draw smooth, curved paths on the field called trajectories, which the robot will follow.
+* 
+
+### Why we chose Choreo over PathPlanner
+Choreo is a very powerful tool used for generating autos.
+
+Unlike Pathplanner, which allows you to combine "Paths" into "Autos" in the GUI (graphical user interface), in Choreo you have to construct Autonomous Routines manually in the code by combining Commands into CommandGroups. This allows for more flexibility depending on what is happening on the field since you have more control about what happens during the command sequence as opposed to pathplanner which will not stop for anything and will do the exact same thing every time given what was selected.
+Choreo is much more effective than pathplanner because of how much more optimized its paths are.
+
+### How Choreo works
+A complete guide and documentation for Choreo can be found [here](https://choreo.autos/). We really recommend reading that, as it's much more complete and in-depth.
+
+### How Choreo is used
+There is (OR SHOULD BE) a directory within your project called "choreo" inside of your deploy. Inside of the choreo directory shuld be all of your .traj and .chor files. LOOK AT THE [DOCS](https://choreo.autos/choreolib/getting-started/ "Choreo Docs") for further instructions on how to make the robot actually run these paths. Here is a quick overview though: ***blah blah blah***
+
+
 ## Coding with Choreo
-Choreo is a very powerful tool used for generating autos
-Unlike Pathplanner, you have to build the autonomous commands in the code itself, allowing for more flexibility depending on what is happening on the field since you have more control about what happens during the command sequence as opposed to pathplanner which will not stop for anything and will do the exact same thing every time given a selection.
-Choreo is much more effective than pathplanner because of how much more optimized its paths are
 Here is an example of how we planned to use Choreo to make our autons:
 ```java
+package frc.robot;
+
+import choreo.auto.AutoFactory;
+import choreo.auto.AutoRoutine;
+import choreo.auto.AutoTrajectory;
+import dev.doglog.DogLog;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.ElevatorConstants.ElevatorPositions;
+import frc.robot.commandGroups.Intake;
+import frc.robot.commandGroups.JamesHardenScore;
+import frc.robot.commands.AutoCommands.SetIsAutoRunningToFalse;
+import frc.robot.commands.DebugCommands.DogLogCmd;
+import frc.robot.commands.ElevatorCommands.SetElevatorLevel;
+import frc.robot.commands.FunnelCommands.RunFunnelUntilCheckedIn;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.FunnelSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.TootsieSlideSubsystem;
+import java.util.ArrayList;
+import java.util.function.BooleanSupplier;
+
+public class AutoRoutines {
+  private final AutoFactory autoFactory;
+  private final SwerveSubsystem driveTrain;
+  private final ElevatorSubsystem elevatorSubsystem;
+  private final TootsieSlideSubsystem tootsieSlideSubsystem;
+  private final FunnelSubsystem funnelSubsystem;
+  private final BooleanSupplier redside;
+
+  private AutoRoutine routine;
+  private ArrayList<String> topNames;
+  private ArrayList<String> middleNames;
+  private ArrayList<String> bottomNames;
+  private ArrayList<AutoTrajectory> topTraj;
+  private ArrayList<AutoTrajectory> middleTraj;
+  private ArrayList<AutoTrajectory> bottomTraj;
+
+  private static boolean isAutoRunning = true;
+
+  public AutoRoutines(
+      AutoFactory factory,
+      SwerveSubsystem driveTrain,
+      ElevatorSubsystem elevatorSubsystem,
+      TootsieSlideSubsystem tootsieSlideSubsystem,
+      FunnelSubsystem funnelSubsystem,
+      BooleanSupplier redside) {
+
+    this.autoFactory = factory;
+    this.driveTrain = driveTrain;
+    this.elevatorSubsystem = elevatorSubsystem;
+    this.tootsieSlideSubsystem = tootsieSlideSubsystem;
+    this.funnelSubsystem = funnelSubsystem;
+    this.redside = redside;
+
+    this.routine = autoFactory.newRoutine("routine");
+
+    /*
+    Field Diagram
+
+              BLUE                        RED
+    ___________________________________________________
+    |THPS                 TSTART                  THPS|
+    |                       | |                       |
+    |        5    4         | |         4    5        |
+    |     0          3    MSTART     3          0     |
+    |        1    2         | |         2    1        |
+    |                       | |                       |
+    |BHPS_________________BSTART__________________BHPS|
+
+    L and R branches are on the left and right of the robot when it is at the reef in between the two branches
+
+    a path name consists of a start and a destination
+    a start and a destinantion can be on any one of those marked areas
+    the format for a path is start-destination
+    ex. 2L-BHPS
+    this path starts from the left branch on the second part of the reef (2L), and goes to the bottom human player station (BHPS)
+    */
+
+    this.topNames = new ArrayList<>();
+    this.topNames.add("TSTART-4R");
+    this.topNames.add("4R-THPS");
+    this.topNames.add("THPS-5L");
+    this.topNames.add("5L-THPS");
+    this.topNames.add("THPS-5R");
+    this.topNames.add("5R-THPS");
+    this.topNames.add("THPS-0L");
+
+    this.middleNames = new ArrayList<>();
+    this.middleNames.add("MSTART-3R");
+
+    this.bottomNames = new ArrayList<>();
+    this.bottomNames.add("BSTART-2L");
+    this.bottomNames.add("2L-BHPS");
+    this.bottomNames.add("BHPS-1R");
+    this.bottomNames.add("1R-BHPS");
+    this.bottomNames.add("BHPS-1L");
+    this.bottomNames.add("1L-BHPS");
+    this.bottomNames.add("BHPS-0R");
+
+    this.topTraj = new ArrayList<>();
+    this.middleTraj = new ArrayList<>();
+    this.bottomTraj = new ArrayList<>();
+
+    for (String n : topNames) {
+      topTraj.add(routine.trajectory(n));
+    }
+    for (String n : middleNames) {
+      middleTraj.add(routine.trajectory(n));
+    }
+    for (String n : bottomNames) {
+      bottomTraj.add(routine.trajectory(n));
+    }
+  }
+
+  public AutoRoutine topAutoRoutine() {
+    return autoRoutine("top");
+  }
+
+  public AutoRoutine middleAutoRoutine() {
+    return autoRoutine("middle");
+  }
+
+  public AutoRoutine bottomAutoRoutine() {
+    return autoRoutine("bottom");
+  }
+
+  public AutoRoutine autoRoutine(String chosenAuto) {
+    SequentialCommandGroup autoCommandGroup = new SequentialCommandGroup();
+    int numPaths; // Number of trajectories (segments) in the chosen Auto routine
+
+    // Set the first command in the AutoCommandGroup to reset the Odometry to the start Pose of the
+    // first trajectory in Choreo
+    switch (chosenAuto) {
+      case "top":
+        autoCommandGroup.addCommands(topTraj.get(0).resetOdometry());
+        numPaths = topNames.size();
+        break;
+
+      case "middle":
+        autoCommandGroup.addCommands(middleTraj.get(0).resetOdometry());
+        numPaths = middleNames.size();
+        break;
+
+      case "bottom":
+        autoCommandGroup.addCommands(bottomTraj.get(0).resetOdometry());
+        numPaths = bottomNames.size();
+        break;
+      default:
+        throw new Error(
+            "AUTO ERROR: The SmartDashboard SendableChooser for Auto (top/middle/bottom) was incorrect in autoRoutine()");
+    }
+
+    // Add all the auto segments as commands
+    for (int i = 0; i < numPaths; i++) {
+      autoCommandGroup.addCommands(autoSubCommand(chosenAuto, i));
+    }
+
+    // Set isAutoRunning to false when auto routine finishes
+    autoCommandGroup.addCommands(new SetIsAutoRunningToFalse());
+
+    // Bind the Auto SequentialCommandGroup to run when the routine is activated
+    routine.active().onTrue(autoCommandGroup);
+
+    DogLog.log("Auto/Returning-Auto-Routine", chosenAuto);
+    DogLog.log("Auto/Returning-Num-Paths", numPaths);
+
+    return routine;
+  }
+
+  /**
+   * AutoSubCommand creates a Command Group, which is a combination of the robot's swerve motion and
+   * necessary mechanism action.
+   *
+   * @param chosenAuto - A String representing whether the top, middle, or bottom auto routine was
+   *     selected. Passed on as a parameter inside autoRoutine().
+   * @param index - An int representing which trajectory/segment of the auto routine to create a
+   *     command for. Corresponds to the ArrayLists of trajectory names and AutoTrajectories created
+   *     in the constructor.
+   */
+  public Command autoSubCommand(String chosenAuto, int index) {
+    /*
+    ----- New Structure 2 (not using configureBindings()): -----
+
+    Sequential (
+      Intake-To-Tootsie (if Start or leaving HPS),
+      Elevator: Safe Position, // we only want to move with the elevator down at the Safe position
+      Follow Trajectory,
+      if going to HPS (
+        Parallel (
+          Elevator: Intake // start moving Elevator to Intake to get ready for incoming Coral at HPS
+          Wait-For-Coral-Checkin // waiting for a Coral to hit Checkin sensor at the HPS
+        )
+      )
+      else if Start or leaving HPS (
+        Sequential (
+          Elevator: L4
+          Shoot-Coral
+        )
+      )
+    )
+
+    */
+
+    String trajName; // Name of the .traj file that corresponds to chosenAuto and index
+    AutoTrajectory trajectory; // Corresponding AutoTrajectory from the ArrayList initialized in the
+    // constructor
+
+    // Set trajName and trajectory based on chosenAuto and index
+    switch (chosenAuto) {
+      case "top":
+        trajName = topNames.get(index);
+        trajectory = topTraj.get(index);
+        break;
+
+      case "middle":
+        trajName = middleNames.get(index);
+        trajectory = middleTraj.get(index);
+        break;
+
+      case "bottom":
+        trajName = bottomNames.get(index);
+        trajectory = bottomTraj.get(index);
+        break;
+
+      default:
+        throw new Error(
+            "AUTO ERROR: The SmartDashboard SendableChooser for Auto (top/middle/bottom) was incorrect in autoSubCommand()");
+    }
+    
+    BooleanSupplier pathGoesToHPS =
+        () -> !(trajName.contains("HPS-") || trajName.contains("START-"));
+    BooleanSupplier startOrLeavingHPS = () -> !pathGoesToHPS.getAsBoolean();
+    boolean goRightBranch = trajName.substring(trajName.length() - 1).equals("R");
+
+    DogLog.log("Auto/trajName", trajName);
+    DogLog.log("Auto/pathGoesToHPS", pathGoesToHPS.getAsBoolean());
+
+    // See Structure description comment above for a sort-of better explanation
+    Command newStructure2 =
+        Commands.sequence(
+            new Intake(elevatorSubsystem, funnelSubsystem, tootsieSlideSubsystem)
+                .onlyIf(startOrLeavingHPS),
+            new SetElevatorLevel(
+                elevatorSubsystem,
+                ElevatorPositions
+                    .safePosition), // using L1 as the Safe Position because not sure if the "pos"
+            // value in
+            // the Constants Enum should be 0 or 1
+            trajectory
+                .cmd()
+                .alongWith(new DogLogCmd("Auto/CurrTrajRunning", trajName))
+                .andThen(new DogLogCmd("Auto/CurrTrajRunning", "none")), // actual robot movement
+            (pathGoesToHPS.getAsBoolean()
+                ? new ParallelCommandGroup(
+                    new SetElevatorLevel(elevatorSubsystem, ElevatorPositions.Intake),
+                    new RunFunnelUntilCheckedIn(funnelSubsystem))
+                : new JamesHardenScore(
+                    elevatorSubsystem,
+                    tootsieSlideSubsystem,
+                    driveTrain,
+                    ElevatorPositions.L4,
+                    redside,
+                    goRightBranch)));
+
+    return newStructure2;
+  }
+
+  public static void setIsAutoRunning(boolean running) {
+    isAutoRunning = running;
+  }
+
+  public static boolean getIsAutoRunning() {
+    return isAutoRunning;
+  }
+}
+
+// Commands we should use for Auto:
+// new SetElevatorLevel // Intake
+// new RunFunnelUntilDetectionSafe
+// new TransferPieceBetweenFunnelAndElevator
+// new SetElevatorLevel // L4
+// new ShootTootsieSlide
+// new SetElevatorLevel // Intake
+```
+
+The idea of this code is that this class has methods to create different `java Autoroutine` classes and adds groups of sequential commands to it with the repeated use of the `java autoSubCommand()` method. This method takes the actual paths from an `java ArrayList<AutoTrajectory>` which correspond to a given path inside the /deploy/choreo directory inside the project and adds logic around them to tell the robot what to do given the name of the path (stored in an `java ArrayList<String>`) given an index and a String which tells it the ArrayLists to check. It is **IMPERATIVE** that you have your paths in the choreo directory inside deploy! If it doesn't exist already, make a folder with the name choreo in deploy and put all of your .traj and the .chor file in there! The constructor of this class creates 6 different ArrayLists, 3 of them hold the actual `java AutoTrajectory` classes which are the paths themselves for each type of auton we want. The other 3 hold the names of those paths for logic purposes.
