@@ -24,6 +24,7 @@ There is (OR SHOULD BE) a directory within your project called "choreo" inside o
 
 ## Coding with Choreo
 Here is an example of how we planned to use Choreo to make our autons:
+### Code:
 ```java
 package frc.robot;
 
@@ -312,5 +313,7 @@ public class AutoRoutines {
 // new ShootTootsieSlide
 // new SetElevatorLevel // Intake
 ```
-
+### What Does it Do?
 The idea of this code is that this class has methods to create different `java Autoroutine` classes and adds groups of sequential commands to it with the repeated use of the `java autoSubCommand()` method. This method takes the actual paths from an `java ArrayList<AutoTrajectory>` which correspond to a given path inside the /deploy/choreo directory inside the project and adds logic around them to tell the robot what to do given the name of the path (stored in an `java ArrayList<String>`) given an index and a String which tells it the ArrayLists to check. It is **IMPERATIVE** that you have your paths in the choreo directory inside deploy! If it doesn't exist already, make a folder with the name choreo in deploy and put all of your .traj and the .chor file in there! The constructor of this class creates 6 different ArrayLists, 3 of them hold the actual `java AutoTrajectory` classes which are the paths themselves for each type of auton we want. The other 3 hold the names of those paths for logic purposes.
+
+### What Are All of These Classes Anyway?
