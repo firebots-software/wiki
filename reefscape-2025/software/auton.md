@@ -16,10 +16,10 @@ Unlike Pathplanner, which allows you to combine "Paths" into "Autos" in the GUI 
 Choreo is much more effective than pathplanner because of how much more optimized its paths are.
 
 ### How Choreo works
-A complete guide and documentation for Choreo can be found [here](https://choreo.autos/ "Choreo Docs"). We really recommend reading that, as it's much more complete and in-depth.
+A complete guide and documentation for Choreo can be found [here](https://choreo.autos/ "Choreo Docs"). We really recommend reading that, as it's much more complete and in-depth than anything we could say.
 
 ### How Choreo is used
-There is (OR SHOULD BE) a directory within your project called "choreo" inside of your deploy. Inside of the choreo directory shuld be all of your .traj and .chor files. LOOK AT THE [DOCS](https://choreo.autos/choreolib/getting-started/ "Choreo Docs") for further instructions on how to make the robot actually run these paths. Here is a quick overview though: ***blah blah blah***
+There is (OR SHOULD BE) a directory within your project called "choreo" inside of your deploy. Inside of the choreo directory shuld be all of your .traj and .chor files. LOOK AT THE [DOCS](https://choreo.autos/choreolib/getting-started/ "Choreo Docs") for further instructions on how to make the robot actually run these paths.
 
 
 ## Coding with Choreo
